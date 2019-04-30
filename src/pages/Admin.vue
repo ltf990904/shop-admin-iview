@@ -1,7 +1,11 @@
 <template>
   <div class="layout">
     <Layout>
+      <!-- 左侧栏 -->
       <Sider ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
+        <div class="logo">
+          <img src="../assets/logo.png" alt style="width:65px">
+        </div>
         <Menu
           :active-name="$route.meta"
           :open-names="[navList[0]]"
@@ -34,8 +38,8 @@
           </Submenu>
         </Menu>
       </Sider>
-      <!-- 头部部分 -->
       <Layout>
+        <!-- 头部部分 -->
         <Header :style="{padding: 0}" class="layout-header-bar">
           <Row type="flex" justify="space-between" align="middle">
             <Row type="flex" align="middle">
@@ -45,24 +49,30 @@
                 :style="{margin: '0 20px'}"
                 type="md-menu"
                 size="24"
+                title="展开左侧栏"
               ></Icon>
+              <!-- 面包屑导航 -->
               <Breadcrumb>
                 <BreadcrumbItem v-for="(v,i) in navList" :key="i">{{ v }}</BreadcrumbItem>
               </Breadcrumb>
             </Row>
+            <!-- 用户信息 -->
             <Row type="flex" align="middle">
               <span class="userinfo">
                 {{userInfo.uname}}
                 /
                 {{userInfo.realname}}
               </span>
-              <Button @click="logout" style="margin:0 20px;" type="error">
+              <Button @click="handleLogout" style="margin:0 20px;" type="error">
                 <Icon type="md-log-out" size="18"/>退出
               </Button>
             </Row>
           </Row>
         </Header>
-        <Content :style="{margin: '20px', background: '#fff', minHeight: '260px'}">
+        <!-- 中间内容-可以滚动 -->
+        <Content
+          :style="{margin: '20px', background: '#f5f7f9', minHeight: '260px',overflowY: 'scroll'}"
+        >
           <router-view></router-view>
         </Content>
       </Layout>
@@ -111,13 +121,13 @@ export default {
       this.$refs.side1.toggleCollapse();
     },
     // 退出
-    logout() {
+    handleLogout() {
       this.$axios({
         url: "/admin/account/logout"
       }).then(res => {
         // console.log(res);
         if (res.data.status === 0) {
-          localStorage.removeItem("userInfo");
+          sessionStorage.removeItem("userInfo");
           this.$Message.success(res.data.message);
           this.$router.replace("/login");
         } else {
@@ -128,7 +138,7 @@ export default {
   },
   computed: {
     userInfo() {
-      return JSON.parse(localStorage.getItem("userInfo"));
+      return JSON.parse(sessionStorage.getItem("userInfo"));
     },
     navList() {
       return this.$route.matched.map(v => {
@@ -152,6 +162,11 @@ export default {
   position: relative;
   border-radius: 4px;
   overflow: hidden;
+}
+.logo {
+  background-color: #3d424a;
+  height: 65px;
+  text-align: center;
 }
 .layout-header-bar {
   background: #fff;

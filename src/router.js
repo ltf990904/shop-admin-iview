@@ -21,8 +21,13 @@ export default new Router({
     },
     {
       path: 'category-list',
-      component: () => import(/* webpackChunkName: "catelist" */ './pages/CateList.vue'),
+      component: () => import(/* webpackChunkName: "catelist" */ './pages/CategoryList.vue'),
       meta: '栏目管理'
+    },
+    {
+      path: 'goods-add',
+      component: () => import(/* webpackChunkName: "goodsadd" */ './pages/GoodsAdd.vue'),
+      meta: '新增商品'
     },
     ]
   },

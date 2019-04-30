@@ -51,7 +51,7 @@ export default {
             }
           }).then(res => {
             if (res.data.status === 0) {
-              localStorage.setItem('userInfo', JSON.stringify(res.data.message))
+              sessionStorage.setItem('userInfo', JSON.stringify(res.data.message))
               this.$Message.success('登录成功')
               this.$router.push('/admin')
             } else {
