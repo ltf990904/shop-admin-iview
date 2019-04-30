@@ -13,7 +13,7 @@ export default new Router({
     name: 'admin',
     redirect: '/admin/goods-list',
     component: () => import(/* webpackChunkName: "admin" */ './pages/Admin.vue'),
-    meta: '管理系统',
+    meta: '商城管理',
     children: [{
       path: 'goods-list',
       component: () => import(/* webpackChunkName: "goodslist" */ './pages/GoodsList.vue'),
@@ -25,6 +25,18 @@ export default new Router({
       meta: '栏目管理'
     },
     ]
+  },
+  {
+    path: '/account',
+    name: 'account',
+    redirect: '/account/account-list',
+    component: () => import(/* webpackChunkName: "admin" */ './pages/Admin.vue'),
+    meta: '会员管理',
+    children: [{
+      path: 'account-list',
+      component: () => import(/* webpackChunkName: "goodslist" */ './pages/AccountList.vue'),
+      meta: '会员列表'
+    }]
   },
   {
     path: '/login',

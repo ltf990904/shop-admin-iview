@@ -34,6 +34,7 @@
           </Submenu>
         </Menu>
       </Sider>
+      <!-- 头部部分 -->
       <Layout>
         <Header :style="{padding: 0}" class="layout-header-bar">
           <Row type="flex" justify="space-between" align="middle">
@@ -50,10 +51,10 @@
               </Breadcrumb>
             </Row>
             <Row type="flex" align="middle">
-              <span>
-                <b style="fontSize:16px">{{userInfo.uname}}</b>
-                -
-                <b style="fontSize:16px">{{userInfo.realname}}</b>
+              <span class="userinfo">
+                {{userInfo.uname}}
+                /
+                {{userInfo.realname}}
               </span>
               <Button @click="logout" style="margin:0 20px;" type="error">
                 <Icon type="md-log-out" size="18"/>退出
@@ -120,7 +121,7 @@ export default {
           this.$Message.success(res.data.message);
           this.$router.replace("/login");
         } else {
-          this.$Message.error("Fail!");
+          this.$Message.error("Fail");
         }
       });
     }
@@ -162,6 +163,10 @@ export default {
   background: #5b6270;
   border-radius: 3px;
   margin: 15px auto;
+}
+.userinfo {
+  font-size: 16px;
+  color: #2d8cf0;
 }
 .menu-icon {
   transition: all 0.3s;
