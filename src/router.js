@@ -13,7 +13,7 @@ export default new Router({
     name: 'admin',
     redirect: '/admin/goods-list',
     component: () => import(/* webpackChunkName: "admin" */ './pages/Admin.vue'),
-    meta: '购物商城',
+    meta: '管理系统',
     children: [{
       path: 'goods-list',
       component: () => import(/* webpackChunkName: "goodslist" */ './pages/GoodsList.vue'),
