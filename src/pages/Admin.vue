@@ -122,16 +122,22 @@ export default {
     },
     // 退出
     handleLogout() {
-      this.$axios({
-        url: "/admin/account/logout"
-      }).then(res => {
-        // console.log(res);
-        if (res.data.status === 0) {
-          sessionStorage.removeItem("userInfo");
-          this.$Message.success(res.data.message);
-          this.$router.replace("/login");
-        } else {
-          this.$Message.error("Fail");
+      this.$Modal.confirm({
+        title: "系统提示",
+        content: "确定要退出吗？",
+        onOk: () => {
+          this.$axios({
+            url: "/admin/account/logout"
+          }).then(res => {
+            // console.log(res);
+            if (res.data.status === 0) {
+              sessionStorage.removeItem("userInfo");
+              this.$Message.success(res.data.message);
+              this.$router.replace("/login");
+            } else {
+              this.$Message.error("Fail");
+            }
+          });
         }
       });
     }

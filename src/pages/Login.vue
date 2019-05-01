@@ -16,7 +16,7 @@
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit('formInline')">登录</Button>
-          <Button @click="handleReset('formInline')" style="margin-left: 8px">重置</Button>
+          <Button type="error" @click="handleReset('formInline')" style="margin-left: 8px">重置</Button>
         </FormItem>
       </Form>
     </Card>

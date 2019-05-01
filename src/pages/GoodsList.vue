@@ -26,9 +26,9 @@
             <span>{{row.title}}</span>
           </div>
         </template>
-        <template slot-scope="{ row, index }" slot="action">
+        <template slot-scope="scope" slot="action">
           <Button type="primary" size="large" style="margin-right: 5px" @click="show(index)">编辑</Button>
-          <Button type="error" size="large" @click="remove(index)">删除</Button>
+          <Button type="error" size="large" @click="handleDelete(scope.row)">删除</Button>
         </template>
       </Table>
       <Page
@@ -99,7 +99,7 @@ export default {
           this.pageSize
         }&searchvalue=${this.searchValue}`
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         let result = res.data;
         this.goodsList = result.message;
         this.goodsTotal = result.totalcount;
@@ -110,6 +110,25 @@ export default {
     pageSizeChange(value) {
       this.pageSize = value;
       this.getGoodsList();
+    },
+    // 删除单行数据
+    handleDelete(row) {
+      const id = row.id;
+      // console.log(row.id);
+      this.$Modal.confirm({
+        title: "系统提示",
+        content: "确定要删除商品吗？",
+        onOk: () => {
+          this.$axios({
+            url: `/admin/goods/del/${id}`
+          }).then(res => {
+            const { status, message } = res.data;
+            this.$Message.success(message);
+            // 刷新数据商品列表
+            this.getGoodsList();
+          });
+        }
+      });
     }
   },
   mounted() {
