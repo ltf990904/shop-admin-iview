@@ -2,7 +2,21 @@
   <div>
     <Form ref="formInline" inline>
       <Row type="flex" justify="space-between">
-        <div></div>
+        <div>
+          <Select
+            v-model="statusValue"
+            placeholder="选择订单状态"
+            @on-change="hanleStatusChange"
+            style="width:120px"
+          >
+            <Option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></Option>
+          </Select>
+        </div>
         <FormItem prop="user">
           <Input size="large" type="text" v-model.trim="searchValue" placeholder="请输入会员名称">
             <Button slot="append" icon="ios-search" @click="handleSearch"></Button>
@@ -12,7 +26,7 @@
     </Form>
     <!-- 会员数据列表 -->
     <div>
-      <Table border ref="selection" :columns="columns" :data="orderList">
+      <Table border :columns="columns" :data="orderList" @on-change="handleSelectionChange">
         <template slot-scope="scope" slot="action">
           <router-link :to="`order-edit/${scope.row.id}`">
             <Button type="primary">编辑</Button>
@@ -79,10 +93,40 @@ export default {
         }
       ],
       orderList: [],
+      selectedRows: [],
+      orderstatus: 0,
       pageIndex: 1,
       pageSize: 5,
       orderTotal: 0,
-      searchValue: ""
+      searchValue: "",
+
+      options: [
+        {
+          value: 0,
+          label: "全部"
+        },
+        {
+          value: 1,
+          label: "待付款"
+        },
+        {
+          value: 2,
+          label: "已付款"
+        },
+        {
+          value: 3,
+          label: "已发货"
+        },
+        {
+          value: 4,
+          label: "已签收"
+        },
+        {
+          value: 5,
+          label: "已取消"
+        }
+      ],
+      statusValue: ""
     };
   },
   methods: {
@@ -98,7 +142,10 @@ export default {
       this.$axios({
         url: `/admin/order/getorderlist?pageIndex=${this.pageIndex}&pageSize=${
           this.pageSize
-        }&searchvalue=${this.searchValue}`
+        }&searchvalue=${this.searchValue}`,
+        params: {
+          orderstatus: this.orderstatus
+        }
       }).then(res => {
         // console.log(res);
         let result = res.data;
@@ -110,6 +157,14 @@ export default {
     },
     pageSizeChange(value) {
       this.pageSize = value;
+      this.getOrderList();
+    },
+    handleSelectionChange(value) {
+      this.selectedRows = value;
+    },
+    hanleStatusChange(value) {
+      // console.log(123);
+      this.orderstatus = value;
       this.getOrderList();
     }
   },

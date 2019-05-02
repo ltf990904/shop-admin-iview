@@ -69,7 +69,7 @@ export default {
     this.$axios({
       url: `/admin/order/getorderdetial/${id}`
     }).then(res => {
-      console.log(res);
+      // console.log(res);
       const { message } = res.data;
       this.data = message;
     });

@@ -1,7 +1,7 @@
 <template>
   <Form ref="form" :model="form" :label-width="80" style="width:900px;">
     <FormItem label="订单ID">
-      <Input v-model="form.order_no" disabled="true"></Input>
+      <Input v-model="form.order_no" disabled></Input>
     </FormItem>
     <FormItem label="快递单号">
       <Input v-model="form.express_no"></Input>
