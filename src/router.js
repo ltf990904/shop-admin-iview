@@ -35,12 +35,34 @@ export default new Router({
     path: '/account',
     name: 'account',
     redirect: '/account/account-list',
-    component: () => import(/* webpackChunkName: "admin" */ './pages/Admin.vue'),
+    component: () => import(/* webpackChunkName: "account" */ './pages/Admin.vue'),
     meta: '会员管理',
     children: [{
       path: 'account-list',
-      component: () => import(/* webpackChunkName: "goodslist" */ './pages/AccountList.vue'),
+      component: () => import(/* webpackChunkName: "accountlist" */ './pages/AccountList.vue'),
       meta: '会员列表'
+    }]
+  },
+  {
+    path: '/order',
+    name: 'order',
+    redirect: '/order/order-list',
+    component: () => import(/* webpackChunkName: "order" */ './pages/Admin.vue'),
+    meta: '商城订单',
+    children: [{
+      path: 'order-list',
+      component: () => import(/* webpackChunkName: "orderlist" */ './pages/OrderList.vue'),
+      meta: '订单管理'
+    },
+    {
+      path: 'order-edit/:id',
+      component: () => import(/* webpackChunkName: "orderedit" */ './pages/OrderEdit.vue'),
+      meta: '编辑订单'
+    },
+    {
+      path: 'order-detail/:id',
+      component: () => import(/* webpackChunkName: "orderdetail" */ './pages/OrderDetail.vue'),
+      meta: '订单详情'
     }]
   },
   {

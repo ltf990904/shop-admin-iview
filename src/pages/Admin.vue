@@ -112,6 +112,17 @@ export default {
               src: "/account/account-list"
             }
           ]
+        },
+        {
+          icon: "logo-usd",
+          name: "商城订单",
+          children: [
+            {
+              name: "订单管理",
+              icon: "logo-yen",
+              src: "/order/order-list"
+            }
+          ]
         }
       ]
     };
