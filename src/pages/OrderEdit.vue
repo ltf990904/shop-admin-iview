@@ -1,5 +1,5 @@
 <template>
-  <Form ref="form" :model="form" :label-width="80" style="width:800px;">
+  <Form ref="form" :model="form" :label-width="80" style="width:900px;">
     <FormItem label="订单ID">
       <span class="tips">{{form.order_no}}</span>
     </FormItem>
