@@ -29,6 +29,11 @@ export default new Router({
       component: () => import(/* webpackChunkName: "goodsadd" */ './pages/GoodsAdd.vue'),
       meta: '新增商品'
     },
+    {
+      path: 'category-add',
+      component: () => import(/* webpackChunkName: "categoryadd" */ './pages/CategoryAdd.vue'),
+      meta: '新增栏目'
+    },
     ]
   },
   {
