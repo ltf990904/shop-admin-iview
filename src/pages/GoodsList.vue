@@ -7,7 +7,7 @@
             <Button size="large" type="success" @click="$router.push('/admin/goods-add')">新增</Button>
           </FormItem>
           <FormItem>
-            <Button size="large" type="error">删除</Button>
+            <Button size="large" type="error" @click="handleMoreDelete">删除</Button>
           </FormItem>
         </div>
         <FormItem prop="user">
@@ -19,7 +19,13 @@
     </Form>
 
     <div>
-      <Table border ref="selection" :columns="columns" :data="goodsList">
+      <Table
+        border
+        ref="selection"
+        :columns="columns"
+        :data="goodsList"
+        @on-selection-change="handleSelectionChange"
+      >
         <template slot-scope="{ row }" slot="title">
           <div class="table_title">
             <img :src="row.imgurl" :alt="row.title">
@@ -81,7 +87,8 @@ export default {
       pageIndex: 1,
       pageSize: 5,
       goodsTotal: 0,
-      searchValue: ""
+      searchValue: "",
+      ids: [],
     };
   },
   methods: {
@@ -129,6 +136,42 @@ export default {
           });
         }
       });
+    },
+    // 多选的时候触发
+    handleSelectionChange(value) {
+      var ids = value.map(v => {
+        return v.id;
+      });
+      this.ids = ids;
+      // console.log(ids);
+    },
+    // 删除多条数据
+    handleMoreDelete() {
+      const id = this.ids.join(",");
+      // console.log(id);
+      // 判断是否选择了商品
+      if (id === "") {
+        this.$Message.error("没有选择商品");
+        return;
+      } else {
+        // 询问是否删除
+        this.$Modal.confirm({
+          title: "系统提示",
+          content: "确定要删除商品吗？",
+          onOk: () => {
+            //调用删除接口
+            this.$axios({
+              url: `/admin/goods/del/${id}`
+            }).then(res => {
+              const { status, message } = res.data;
+              // 删除成功后的提示
+              this.$Message.success(res.data.message);
+              // 刷新数据列表
+              this.getGoodsList();
+            });
+          }
+        });
+      }
     }
   },
   mounted() {

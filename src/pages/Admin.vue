@@ -87,7 +87,7 @@ export default {
       isCollapsed: false,
       menus: [
         {
-          icon: "ios-apps-outline",
+          icon: "md-cart",
           name: "商城管理",
           children: [
             {
@@ -114,12 +114,12 @@ export default {
           ]
         },
         {
-          icon: "logo-usd",
+          icon: "ios-cart",
           name: "商城订单",
           children: [
             {
               name: "订单管理",
-              icon: "logo-yen",
+              icon: "ios-paper",
               src: "/order/order-list"
             }
           ]

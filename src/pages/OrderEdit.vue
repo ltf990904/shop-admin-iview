@@ -1,7 +1,7 @@
 <template>
   <Form ref="form" :model="form" :label-width="80" style="width:900px;">
     <FormItem label="订单ID">
-      <span class="tips">{{form.order_no}}</span>
+      <Input v-model="form.order_no" disabled="true"></Input>
     </FormItem>
     <FormItem label="快递单号">
       <Input v-model="form.express_no"></Input>
@@ -33,13 +33,11 @@
     <FormItem label="总金额">
       <Input v-model="form.order_amount"></Input>
     </FormItem>
-
     <FormItem label="订单状态">
       <Select v-model="form.orderstatus">
         <Option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></Option>
       </Select>
     </FormItem>
-
     <FormItem>
       <Button type="primary" @click="onSubmit">保存</Button>
     </FormItem>
@@ -84,7 +82,7 @@ export default {
         },
         {
           value: 5,
-          label: "取消"
+          label: "已取消"
         }
       ]
     };
@@ -114,19 +112,16 @@ export default {
     this.$axios({
       url: `/admin/order/getorderdetial/${id}`
     }).then(res => {
-      console.log(res);
-
+      // console.log(res);
       const {
         message: { orderinfo }
       } = res.data;
       let data = {};
-
       Object.keys(orderinfo).forEach(v => {
         if (this.form.hasOwnProperty(v)) {
           data[v] = orderinfo[v];
         }
       });
-
       this.form = data;
     });
   }
