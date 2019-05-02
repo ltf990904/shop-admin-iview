@@ -1,6 +1,6 @@
 <template>
   <Form ref="form" :model="form" :label-width="80" style="width:900px;">
-    <FormItem label="订单ID">
+    <FormItem label="订单ID" style="width:300px">
       <Input v-model="form.order_no" disabled></Input>
     </FormItem>
     <FormItem label="快递单号">
@@ -33,9 +33,9 @@
     <FormItem label="总金额">
       <Input v-model="form.order_amount"></Input>
     </FormItem>
-    <FormItem label="订单状态">
+    <FormItem label="订单状态" style="width:200px">
       <Select v-model="form.orderstatus">
-        <Option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></Option>
+        <Option v-for="item in options" :value="item.value" :key="item.value" :label="item.label"></Option>
       </Select>
     </FormItem>
     <FormItem>
@@ -65,23 +65,23 @@ export default {
       },
       options: [
         {
-          value: 1,
+          value: "1",
           label: "待付款"
         },
         {
-          value: 2,
+          value: "2",
           label: "已付款"
         },
         {
-          value: 3,
+          value: "3",
           label: "已发货"
         },
         {
-          value: 4,
+          value: "4",
           label: "已签收"
         },
         {
-          value: 5,
+          value: "5",
           label: "已取消"
         }
       ]
