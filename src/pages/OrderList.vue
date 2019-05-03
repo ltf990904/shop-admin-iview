@@ -132,6 +132,7 @@ export default {
   methods: {
     // 搜索
     handleSearch() {
+      this.pageIndex = 1;
       this.getOrderList();
     },
     handleSelectAll(status) {
@@ -140,10 +141,12 @@ export default {
     // 获取订单列表数据
     getOrderList() {
       this.$axios({
+        method: "GET",
         url: `/admin/order/getorderlist?pageIndex=${this.pageIndex}&pageSize=${
           this.pageSize
-        }&searchvalue=${this.searchValue}`,
+        }&vipname=${this.searchValue}`,
         params: {
+          vipname: this.searchvalue,
           orderstatus: this.orderstatus
         }
       }).then(res => {
