@@ -33,7 +33,12 @@
           </div>
         </template>
         <template slot-scope="scope" slot="action">
-          <Button type="primary" size="large" style="margin-right: 5px" @click="show(index)">编辑</Button>
+          <Button
+            type="primary"
+            size="large"
+            style="margin-right: 5px"
+            @click="handleEdit(scope.$index, scope.row)"
+          >编辑</Button>
           <Button type="error" size="large" @click="handleDelete(scope.row)">删除</Button>
         </template>
       </Table>
@@ -88,7 +93,7 @@ export default {
       pageSize: 5,
       goodsTotal: 0,
       searchValue: "",
-      ids: [],
+      ids: []
     };
   },
   methods: {
@@ -172,6 +177,11 @@ export default {
           }
         });
       }
+    },
+    // 编辑商品
+    handleEdit(index, row) {
+      // 跳转到编辑页，并且带上id
+      this.$router.push(`/admin/goods-edit/${row.id}`);
     }
   },
   mounted() {

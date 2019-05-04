@@ -30,6 +30,11 @@ export default new Router({
       meta: '新增商品'
     },
     {
+      path: 'goods-edit/:id',
+      component: () => import(/* webpackChunkName: "goodsedit" */ './pages/GoodsEdit.vue'),
+      meta: '编辑商品'
+    },
+    {
       path: 'category-add',
       component: () => import(/* webpackChunkName: "categoryadd" */ './pages/CategoryAdd.vue'),
       meta: '新增栏目'
