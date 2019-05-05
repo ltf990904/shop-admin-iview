@@ -20,6 +20,7 @@
     <div>
       <span>状态:</span>
       {{data.orderinfo.orderstatus}}
+      <span>（"1"代表待付款;"2"代表已付款;"3"代表已发货;"4"代表已签收;"5"代表已取消）</span>
     </div>
     <div>
       <span>购买时间:</span>
