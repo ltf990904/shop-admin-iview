@@ -20,39 +20,36 @@
     <FormItem label="副标题">
       <Input v-model="form.sub_title" placeholder="请输入副标题"></Input>
     </FormItem>
+
     <FormItem label="封面图片">
-      <div class="demo-upload-list" v-for="(item,i) in uploadList" :key="i">
-        <template v-if="item.status === 'finished'">
+      <div class="demo-upload-list" v-for="(item,i) in form.imgList" :key="i">
+        <template>
           <img :src="item.url">
           <div class="demo-upload-list-cover">
             <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
             <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
           </div>
         </template>
-        <template v-else>
-          <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-        </template>
       </div>
       <Upload
-        ref="upload"
+        ref="avatar"
         :show-upload-list="false"
         :default-file-list="form.imgList"
-        :on-success="handleSuccess"
+        :on-success="handleAvatarSuccess"
         :format="['jpg','jpeg','png']"
         :max-size="2048"
         :on-format-error="handleFormatError"
         :on-exceeded-size="handleMaxSize"
-        :before-upload="handleBeforeUpload"
         type="drag"
         action="http://localhost:8899/admin/article/uploadimg"
-        style="display:inline-block;width:58px;"
+        style="display: inline-block;width:58px;"
       >
         <div style="width: 58px;height:58px;line-height: 58px;">
           <Icon type="ios-camera" size="20"></Icon>
         </div>
       </Upload>
       <Modal title="View Image" v-model="visible">
-        <img :src="imgName.url" v-if="visible" style="width: 100%">
+        <img :src="modalImg" v-if="visible" style="width: 100%">
       </Modal>
     </FormItem>
     <FormItem label="商品货号">
@@ -68,29 +65,25 @@
       <Input v-model="form.sell_price" placeholder="请输入销售价格"></Input>
     </FormItem>
 
-    <!-- <FormItem label="图片相册">
-      <div class="demo-upload-list" v-for="item in uploadList">
-        <template v-if="item.status === 'finished'">
+    <FormItem label="图片相册">
+      <div class="demo-upload-list" v-for="(item,i) in form.fileList" :key="i">
+        <template>
           <img :src="item.url">
           <div class="demo-upload-list-cover">
-            <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-            <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+            <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+            <Icon type="ios-trash-outline" @click.native="handleFileRemove(item)"></Icon>
           </div>
-        </template>
-        <template v-else>
-          <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
         </template>
       </div>
       <Upload
-        ref="upload"
+        ref="file"
         :show-upload-list="false"
-        :on-success="handleSuccess"
+        :default-file-list="form.fileList"
+        :on-success="handleFileSuccess"
         :format="['jpg','jpeg','png']"
         :max-size="2048"
         :on-format-error="handleFormatError"
         :on-exceeded-size="handleMaxSize"
-        :before-upload="handleBeforeUpload"
-        multiple
         type="drag"
         action="http://localhost:8899/admin/article/uploadimg"
         style="display: inline-block;width:58px;"
@@ -100,35 +93,37 @@
         </div>
       </Upload>
       <Modal title="View Image" v-model="visible">
-        <img
-          :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'"
-          v-if="visible"
-          style="width: 100%"
-        >
+        <img :src="modalImg" v-if="visible" style="width: 100%">
       </Modal>
-    </FormItem>-->
+    </FormItem>
 
     <FormItem label="内容摘要">
       <Input v-model="form.zhaiyao" placeholder="请输入内容摘要"></Input>
     </FormItem>
-    <FormItem label="内容描述" class="editor">
-      <quillEditor v-model="form.content"/>
+    <FormItem label="内容描述">
+      <quillEditor v-model="form.content"></quillEditor>
     </FormItem>
 
     <FormItem>
-      <Button type="success" @click="onSubmit">提交</Button>
+      <Button @click="onSubmit" type="primary">保存</Button>
+      <Button @click="$router.go(-1)" style="margin-left: 8px">取消</Button>
     </FormItem>
   </Form>
 </template>
 
 <script>
-// 引入富文本编辑器的样式文件
+// 导入富文本编辑器的样式
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-
+// 导入组件
 import { quillEditor } from "vue-quill-editor";
+
 export default {
+  // 注册组件
+  components: {
+    quillEditor
+  },
   data() {
     return {
       form: {
@@ -148,83 +143,101 @@ export default {
         content: "",
         is_slide: false
       },
+      // 分类列表
       cateList: [],
-
-      imgName: "",
       visible: false,
-      uploadList: []
+
+      // 相册列表
+      fileList: [],
+      // modal图片
+      modalImg: ""
     };
   },
   methods: {
-    // 提交数据
+    // 提交表单
     onSubmit() {
+      const url = this.goodsId
+        ? `admin/goods/edit/${this.goodsId}`
+        : "/admin/goods/add/goods";
       this.$axios({
-        url: "/admin/goods/add/goods",
+        url,
         method: "POST",
         data: this.form
       }).then(res => {
-        // console.log(res);
-        const { message } = res.data;
-        this.$Message.success(res.data.message);
-        setTimeout(() => {
-          this.$router.back();
-        }, 1000);
+        if (res.data.status === 0) {
+          this.$Message.success(res.data.message);
+          this.$router.push("/admin/goods-list");
+        } else {
+          this.$Message.error("提交失败");
+        }
       });
     },
+    // 获取商品分类列表
     getSelectList() {
       this.$axios({
         url: "/admin/category/getlist/goods"
       }).then(res => {
-        console.log(res);
+        // console.log(res)
         this.cateList = res.data.message;
       });
     },
-    handleView(name) {
-      this.imgName = name;
+
+    // 上传格式错误
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: "格式错误",
+        desc: "只能为jpg、jpeg、png格式"
+      });
+    },
+    // 上传超出大小
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: "图片过大",
+        desc: "图片不能超过2M"
+      });
+    },
+    handleView(value) {
+      this.modalImg = value.url;
       this.visible = true;
     },
     handleRemove(file) {
-      const fileList = this.$refs.upload.fileList;
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+      const imgList = this.form.imgList;
+      this.form.imgList.splice(imgList.indexOf(file), 1);
     },
-    handleSuccess(res, file) {
-      file.url = res.url;
-      file.name = res.name;
+    handleAvatarSuccess(res, file) {
       this.form.imgList = [res];
     },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: "The file format is incorrect",
-        desc:
-          "File format of " +
-          file.name +
-          " is incorrect, please select jpg or png."
-      });
+    handleFileSuccess(res, file) {
+      this.form.fileList.push(res);
     },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: "Exceeding file size limit",
-        desc: "File  " + file.name + " is too large, no more than 2M."
-      });
+    handleFileRemove(file) {
+      const fileList = this.form.fileList;
+      this.form.fileList.splice(fileList.indexOf(file), 1);
     },
-    handleBeforeUpload() {
-      const check = this.uploadList.length < 5;
-      if (!check) {
-        this.$Notice.warning({
-          title: "Up to five pictures can be uploaded."
-        });
-      }
-      return check;
+
+    // 根据Id获取商品信息
+    getGoodsModel(id) {
+      this.$axios({
+        url: `/admin/goods/getgoodsmodel/${id}`
+      }).then(res => {
+        // console.log(res);
+        if (res.data.status === 0) {
+          this.form = res.data.message;
+          this.form.category_id = this.form.category_id - 0;
+        }
+      });
     }
-  },
-  components: {
-    quillEditor
   },
   created() {
     this.getSelectList();
+    if (this.goodsId) {
+      this.getGoodsModel(this.goodsId);
+    }
   },
-  mounted() {
-    this.uploadList = this.$refs.upload.fileList;
+  computed: {
+    goodsId() {
+      return this.$route.query.id;
+    }
   }
 };
 </script>

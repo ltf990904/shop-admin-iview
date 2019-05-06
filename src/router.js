@@ -25,14 +25,9 @@ export default new Router({
       meta: '栏目管理'
     },
     {
-      path: 'goods-add',
-      component: () => import(/* webpackChunkName: "goodsadd" */ './pages/GoodsAdd.vue'),
-      meta: '新增商品'
-    },
-    {
-      path: 'goods-edit/:id',
-      component: () => import(/* webpackChunkName: "goodsedit" */ './pages/GoodsEdit.vue'),
-      meta: '编辑商品'
+      path: 'goods-ctrl',
+      component: () => import(/* webpackChunkName: "goodsctrl" */ './pages/GoodsCtrl.vue'),
+      meta: '添加/编辑商品'
     },
     {
       path: 'category-add',

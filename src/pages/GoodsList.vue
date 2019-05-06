@@ -4,7 +4,7 @@
       <Row type="flex" justify="space-between">
         <div>
           <FormItem>
-            <Button size="large" type="success" @click="$router.push('/admin/goods-add')">新增</Button>
+            <Button size="large" type="success" @click="$router.push('/admin/goods-ctrl')">新增</Button>
           </FormItem>
           <FormItem>
             <Button size="large" type="error" @click="handleMoreDelete">删除</Button>
@@ -12,7 +12,7 @@
         </div>
         <FormItem prop="user">
           <Input size="large" type="text" v-model.trim="searchValue" placeholder="请输入内容">
-            <Button slot="append" icon="ios-search" @click="handleSearch"></Button>
+            <Button slot="append" icon="ios-search" @click="searchGood"></Button>
           </Input>
         </FormItem>
       </Row>
@@ -32,14 +32,9 @@
             <span>{{row.title}}</span>
           </div>
         </template>
-        <template slot-scope="scope" slot="action">
-          <Button
-            type="primary"
-            size="large"
-            style="margin-right: 5px"
-            @click="handleEdit(scope.$index, scope.row)"
-          >编辑</Button>
-          <Button type="error" size="large" @click="handleDelete(scope.row)">删除</Button>
+        <template slot-scope="{ row, index }" slot="action">
+          <Button type="primary" size="large" style="margin-right: 5px" @click="handleEdit(row.id)">编辑</Button>
+          <Button type="error" size="large" @click="handleDelete(row)">删除</Button>
         </template>
       </Table>
       <Page
@@ -97,21 +92,22 @@ export default {
     };
   },
   methods: {
-    // 搜索
-    handleSearch() {
+    handleEdit(id) {
+      this.$router.push({ path: "/admin/goods-ctrl", query: { id } });
+    },
+    searchGood() {
       this.getGoodsList();
     },
     handleSelectAll(status) {
       this.$refs.selection.selectAll(status);
     },
-    // 获取商品数据列表
+    // 获取商品数据
     getGoodsList() {
       this.$axios({
         url: `/admin/goods/getlist?pageIndex=${this.pageIndex}&pageSize=${
           this.pageSize
         }&searchvalue=${this.searchValue}`
       }).then(res => {
-        // console.log(res);
         let result = res.data;
         this.goodsList = result.message;
         this.goodsTotal = result.totalcount;
@@ -123,7 +119,7 @@ export default {
       this.pageSize = value;
       this.getGoodsList();
     },
-    // 删除单行数据
+    // 删除商品
     handleDelete(row) {
       const id = row.id;
       // console.log(row.id);
@@ -177,11 +173,6 @@ export default {
           }
         });
       }
-    },
-    // 编辑商品
-    handleEdit(index, row) {
-      // 跳转到编辑页，并且带上id
-      this.$router.push(`/admin/goods-edit/${row.id}`);
     }
   },
   mounted() {
